@@ -20,13 +20,13 @@ public class StockController {
 
 	private final StockService stockService;
 
-	@GetMapping("/kospi/all")
+	@GetMapping("/stock/all")
 	public List<KospiStockDto> getKosPiStockList(HttpServletRequest request) {
 		return stockService.getKosPiStockList();
 
 	}
 	
-	@GetMapping("/kospi/all/excel_download")
+	@GetMapping("/stock/all/excel_download")
 	public void getKosPiStockListExcelDownload(HttpServletRequest request, HttpServletResponse  response, String macket, int stocksCount) {
 		Workbook wb = stockService.getKosPiStockListExcelDownload(macket, stocksCount);
 		

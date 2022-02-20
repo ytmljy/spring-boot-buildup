@@ -1,4 +1,4 @@
-package com.oogo.api.component.stock;
+package com.oogo.api.component.naver;
 
 import com.oogo.api.domain.dto.stock.KospiStockDto;
 

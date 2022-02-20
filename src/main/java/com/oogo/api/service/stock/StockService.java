@@ -1,6 +1,6 @@
 package com.oogo.api.service.stock;
 
-import com.oogo.api.component.stock.JsoupComponent;
+import com.oogo.api.component.naver.JsoupComponent;
 import com.oogo.api.domain.dto.stock.KospiStockDto;
 
 import java.util.HashMap;
