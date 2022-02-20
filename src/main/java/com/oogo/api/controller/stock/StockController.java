@@ -27,10 +27,9 @@ public class StockController {
 	}
 	
 	@GetMapping("/kospi/all/excel_download")
-	public void getKosPiStockListExcelDownload(HttpServletRequest request, HttpServletResponse  response) {
-		Workbook wb = stockService.getKosPiStockListExcelDownload();
+	public void getKosPiStockListExcelDownload(HttpServletRequest request, HttpServletResponse  response, String macket, int stocksCount) {
+		Workbook wb = stockService.getKosPiStockListExcelDownload(macket, stocksCount);
 		
-        // 컨텐츠 타입과 파일명 지정
         response.setContentType("ms-vnd/excel");
         response.setHeader("Content-Disposition", "attachment;filename=example.xlsx");
 

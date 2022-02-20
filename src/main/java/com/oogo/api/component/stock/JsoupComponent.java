@@ -78,43 +78,73 @@ public class JsoupComponent {
 		return headerList;
 	}
 	
-	public List<HashMap<String, String>> getKosPiStockListExcel() {
-		final String stockList = "https://finance.naver.com/sise/sise_market_sum.nhn?&page=1";
+	public List<HashMap<String, Object>> getKosPiStockListExcel(String macket, int stocksCount) {
+		List<HashMap<String,Object>> mapList = new ArrayList<HashMap<String,Object>>();
+		
+		try {
+			int pageCount = ( (stocksCount-1) / PAGE_NUM) + 1;
+			
+			for(int k=0; k<pageCount; k++)
+			{
+				List<KospiStockDto> list = getStockList(macket, k+1);
+				
+				KospiStockDto kospiStockDto = KospiStockDto.builder().build();
+				Class<?> clazz = kospiStockDto.getClass();
+				Field[] fields = clazz.getDeclaredFields();
+				
+				for(int i=0; i<list.size(); i++){
+					KospiStockDto kosipStockDto = list.get(i);
+					HashMap map = new HashMap();
+					for(int j=0; j<fields.length; j++) {
+						fields[j].setAccessible(true);
+						
+						String key = fields[j].getName();
+						try {
+							map.put(key, fields[j].get(kosipStockDto));
+						} catch (IllegalArgumentException e) {
+							log.error("", e);
+						} catch (IllegalAccessException e) {
+							log.error("", e);
+						}
+						
+					}
+					mapList.add(map);
+				}
+			}
+			
+			return mapList;
+		} catch (Exception ignored) {
+			log.error("", ignored);
+		}
+		
+		return null;
+	}
+	
+	private List<KospiStockDto> getStockList(String market, int page) {
+		String stockList = null;
+		
+		if( KOSPI.equals(market) )
+			stockList = "https://finance.naver.com/sise/sise_market_sum.nhn?&page=" + page;
+		else
+			stockList = "https://finance.naver.com/sise/sise_market_sum.nhn?sosok=1&page=" + page;
+		
+		log.info("URL:" + stockList);
+		
 		Connection conn = Jsoup.connect(stockList);
 		try {
 			Document document = conn.get();
 			List<KospiStockDto> list = getKosPiStockList(document);
 			
-			KospiStockDto kospiStockDto = KospiStockDto.builder().build();
-			Class<?> clazz = kospiStockDto.getClass();
-			Field[] fields = clazz.getDeclaredFields();
-			
-			List<HashMap<String,String>> mapList = new ArrayList<HashMap<String,String>>();
-			for(int i=0; i<list.size(); i++){
-				KospiStockDto kosipStockDto = list.get(i);
-				HashMap map = new HashMap();
-				for(int j=0; j<fields.length; j++) {
-					fields[j].setAccessible(true);
-					
-					String key = fields[j].getName();
-					String value = null;
-					try {
-						value = fields[j].get(kosipStockDto)+"";
-					} catch (IllegalArgumentException e) {
-						log.error("", e);
-					} catch (IllegalAccessException e) {
-						log.error("", e);
-					}
-					map.put(key, value);
-				}
-				mapList.add(map);
-			}
-			
-			return mapList;
+			return list;
 		} catch (IOException ignored) {
 			log.error("", ignored);
 		}
 		
 		return null;
 	}
+	
+	public static final String KOSPI = "KOSPI";
+	public static final String KOSDAQ = "KOSDAQ";
+	
+	public static final int PAGE_NUM = 50;
 }
