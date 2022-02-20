@@ -1,3 +1,7 @@
 No	등록일자		내용						참고자료									완료일자		완료여부
 1. 2022-02-20 	10년치 ROE/제무재표 확인		https://dotsnlines.tistory.com/738		
 2. 2022-02-20	DB로 저장 하기
+
+
+#현재 진행 상태
+[20220221] dart api 개발 중 DartApi.java
