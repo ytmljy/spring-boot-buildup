@@ -1,5 +1,7 @@
 package com.oogo.api.service.stock;
 
+import com.oogo.api.component.dart.DartApi;
+import com.oogo.api.component.dart.FinancialStatement;
 import com.oogo.api.component.naver.JsoupComponent;
 import com.oogo.api.domain.dto.stock.KospiStockDto;
 
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class StockService {
 
 	private final JsoupComponent jsoupComponent;
+	private final DartApi dartApi;
 
 	public List<KospiStockDto> getKosPiStockList() {
 		return jsoupComponent.getKosPiStockList();
@@ -97,17 +100,17 @@ public class StockService {
         return wb;
 	}
 	
-	public Workbook getFinancialStateExcelDownload(String stockNum) {
-		List<HashMap<String,Object>> bodyList = jsoupComponent.getKosPiStockListExcel(macket, stocksCount);
+	public Workbook getFinancialStateExcelDownload(String stockNum, String bsnsYear) {
+		List<FinancialStatement> bodyList = dartApi.callFinancialStat(stockNum, bsnsYear);
 		
 		Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet(macket);
+        Sheet sheet = wb.createSheet(stockNum);
         Row row = null;
         Cell cell = null;
         int rowNum = 0;
 
         // Header
-        List<String> headerList = jsoupComponent.getHeaderList();
+        List<String> headerList = dartApi.getHeaderList();
         row = sheet.createRow(rowNum++);
         
         for(int i=0; i<headerList.size(); i++)
@@ -115,10 +118,6 @@ public class StockService {
         	cell = row.createCell(i);
             cell.setCellValue(headerList.get(i));
         }
-        
-    	cell = row.createCell(headerList.size());
-        cell.setCellValue("roe/per");
-    
         
         // Body
         for (int i=0; i<bodyList.size(); i++) {

@@ -1,21 +1,32 @@
 package com.oogo.api.component.dart;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.oogo.api.domain.dto.stock.KospiStockDto;
+
+@Component
 public class DartApi {
 	
 	private static final String AUTH_KEY = "8c21de02c708970df6104b0eb537368f3fff63c2";
 	
-	public Map callFinancialStat(String stockNum, String bsnsYear )
+	public List<FinancialStatement> callFinancialStat(String stockNum, String bsnsYear )
 	{
 		final String url = "https://opendart.fss.or.kr/api/fnlttSinglAcnt.json";
 		
@@ -35,7 +46,20 @@ public class DartApi {
 
         //GetForObject는 헤더를 정의할 수 없음
         ResponseEntity<Map> result = restTemplate.exchange(targetUrl, HttpMethod.GET, httpEntity, Map.class);
-        return result.getBody(); //내용 반환
+        if( result.getStatusCode() != HttpStatus.OK )
+        	return null;
+        
+        String status = (String)result.getBody().get("status");
+        List<FinancialStatement> list = null;
+        if( status.equals("0000") )
+        {    
+            Gson gson = new Gson();
+            
+            Type listType = new TypeToken<ArrayList<FinancialStatement>>(){}.getType();
+            list = gson.fromJson((String)result.getBody().get("list"), listType);
+        }
+        
+        return list; //내용 반환
 	}
 	
 	private String getCorpCode(String stockNum)
@@ -54,6 +78,18 @@ public class DartApi {
 		 */
 		
 		return "11011";
+	}
+	
+	public List<String> getHeaderList() {
+		FinancialStatement dto = FinancialStatement.builder().build();
+		Class<?> clazz = dto.getClass();
+		Field[] fields = clazz.getDeclaredFields();
+
+		List<String> headerList = new ArrayList();
+		for (int i = 0; i < fields.length; i++) {
+			headerList.add(fields[i].getName());
+		}
+		return headerList;
 	}
 
 }
