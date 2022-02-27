@@ -1,8 +1,8 @@
 package com.dayone.api.service.stock;
 
 import com.dayone.api.component.dart.DartApi;
-import com.dayone.api.component.dart.FinancialStatement;
 import com.dayone.api.component.naver.JsoupComponent;
+import com.dayone.api.domain.dto.stock.FinancialStatement;
 import com.dayone.api.domain.dto.stock.KospiStockDto;
 
 import java.util.HashMap;
@@ -114,7 +114,7 @@ public class StockService {
         Cell cell = null;
         int rowNum = 0;
 
-        // Header
+        //Header
         List<String> headerList = dartApi.getHeaderList();
         row = sheet.createRow(rowNum++);
         
@@ -124,7 +124,7 @@ public class StockService {
             cell.setCellValue(headerList.get(i));
         }
         
-        // Body
+        //Body
         for (int i=0; i<bodyList.size(); i++) {
             row = sheet.createRow(rowNum++);
             

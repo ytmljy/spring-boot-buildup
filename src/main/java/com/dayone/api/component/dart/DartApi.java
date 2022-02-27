@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.dayone.api.domain.dto.stock.FinancialStateList;
+import com.dayone.api.domain.dto.stock.FinancialStatement;
 import com.dayone.api.domain.dto.stock.KospiStockDto;
 import com.dayone.api.interceptor.RestRequestInterceptor;
 import com.google.gson.Gson;
@@ -52,29 +55,26 @@ public class DartApi {
                 .toUri();
 
         //GetForObject는 헤더를 정의할 수 없음
-        ResponseEntity<Map> result = restTemplate.exchange(targetUrl, HttpMethod.GET, httpEntity, Map.class);
+        ResponseEntity<FinancialStateList> result = restTemplate.exchange(targetUrl, HttpMethod.GET, httpEntity, new ParameterizedTypeReference<FinancialStateList>() {});
         if( result.getStatusCode() != HttpStatus.OK ) {
         	log.error("Dart Http Resp({})", result.getStatusCodeValue());
         	return null;
         }
         
-        Map resultMap = result.getBody();
-        if( resultMap == null ) {
+        FinancialStateList resultList = result.getBody();
+        if( result == null ) {
         	log.error("Dart Http Resp body null");
         	return null;
         }
         
-        String status = (String)resultMap.get("status");
+        String status = (String)resultList.getStatus();
         List<FinancialStatement> list = null;
         if( status.equals("0000") )
         {    
-            Gson gson = new Gson();
-            
-            Type listType = new TypeToken<ArrayList<FinancialStatement>>(){}.getType();
-            list = gson.fromJson((String)result.getBody().get("list"), listType);
+            list = resultList.getList();
         } else
         {
-        	log.error("staus({}) message({})", status, result.getBody().get("message"));
+        	log.error("staus({}) message({})", status, resultList.getMessage());
         }
         
         return list; //내용 반환
@@ -122,7 +122,7 @@ public class DartApi {
 			사업보고서 : 11011
 		 */
 		
-		return "11011";
+		return "11013";
 	}
 	
 	public List<String> getHeaderList() {
