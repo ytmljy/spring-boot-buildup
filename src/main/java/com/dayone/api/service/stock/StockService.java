@@ -1,9 +1,9 @@
-package com.oogo.api.service.stock;
+package com.dayone.api.service.stock;
 
-import com.oogo.api.component.dart.DartApi;
-import com.oogo.api.component.dart.FinancialStatement;
-import com.oogo.api.component.naver.JsoupComponent;
-import com.oogo.api.domain.dto.stock.KospiStockDto;
+import com.dayone.api.component.dart.DartApi;
+import com.dayone.api.component.dart.FinancialStatement;
+import com.dayone.api.component.naver.JsoupComponent;
+import com.dayone.api.domain.dto.stock.KospiStockDto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +101,12 @@ public class StockService {
 	}
 	
 	public Workbook getFinancialStateExcelDownload(String stockNum, String bsnsYear) {
-		List<FinancialStatement> bodyList = dartApi.callFinancialStat(stockNum, bsnsYear);
+		List<FinancialStatement> list = dartApi.getFinancialStat(stockNum, bsnsYear);
+		
+		if( list == null )
+			return null;
+		
+		List<HashMap<String, Object>> bodyList = dartApi.getFinancialStatExcel(list);
 		
 		Workbook wb = new XSSFWorkbook();
         Sheet sheet = wb.createSheet(stockNum);

@@ -1,4 +1,4 @@
-package com.oogo.api.domain.dto.stock;
+package com.dayone.api.domain.dto.stock;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

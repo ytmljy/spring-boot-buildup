@@ -1,6 +1,4 @@
-package com.oogo.api.component.naver;
-
-import com.oogo.api.domain.dto.stock.KospiStockDto;
+package com.dayone.api.component.naver;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,6 +15,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
+
+import com.dayone.api.domain.dto.stock.KospiStockDto;
 
 @Component
 @Slf4j

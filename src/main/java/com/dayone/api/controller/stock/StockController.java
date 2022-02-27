@@ -1,7 +1,7 @@
-package com.oogo.api.controller.stock;
+package com.dayone.api.controller.stock;
 
-import com.oogo.api.domain.dto.stock.KospiStockDto;
-import com.oogo.api.service.stock.StockService;
+import com.dayone.api.domain.dto.stock.KospiStockDto;
+import com.dayone.api.service.stock.StockService;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,15 +60,18 @@ public class StockController {
 	
 	@GetMapping("/financial/excel_download")
 	public void getFinancialStateExcelDownload(HttpServletRequest request, HttpServletResponse  response, 
-			@RequestParam String stocknum) {
-		
-		/*
-		Workbook wb = stockService.getKosPiStockListExcelDownload(macket, stocksCount);
-		
+			@RequestParam String stock_code) {
+				
 		String yyyyMMdd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		Workbook wb = stockService.getFinancialStateExcelDownload(stock_code, yyyyMMdd);
 		
+		if( wb == null ) {
+			response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+			return;
+		}
+
 		response.setContentType("ms-vnd/excel");
-        response.setHeader("Content-Disposition", "attachment;filename=stok_list_"+macket+"_"+yyyyMMdd+".xlsx");
+        response.setHeader("Content-Disposition", "attachment;filename=stok_list_"+stock_code+"_"+yyyyMMdd+".xlsx");
         
         // Excel File Output
         try {
@@ -84,6 +88,5 @@ public class StockController {
 			} catch( Exception ex )
 			{}
         }
-        */
 	}
 }

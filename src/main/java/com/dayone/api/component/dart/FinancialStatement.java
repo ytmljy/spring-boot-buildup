@@ -1,6 +1,6 @@
-package com.oogo.api.component.dart;
+package com.dayone.api.component.dart;
 
-import com.oogo.api.domain.dto.stock.KospiStockDto;
+import com.dayone.api.domain.dto.stock.KospiStockDto;
 
 import lombok.Builder;
 import lombok.Data;

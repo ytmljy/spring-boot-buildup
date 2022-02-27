@@ -1,4 +1,4 @@
-package com.oogo.api.component.naver;
+package com.dayone.api.component.naver;
 
 import java.io.IOException;
 import org.jsoup.Connection;
