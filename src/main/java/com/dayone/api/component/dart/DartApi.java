@@ -58,7 +58,13 @@ public class DartApi {
         	return null;
         }
         
-        String status = (String)result.getBody().get("status");
+        Map resultMap = result.getBody();
+        if( resultMap == null ) {
+        	log.error("Dart Http Resp body null");
+        	return null;
+        }
+        
+        String status = (String)resultMap.get("status");
         List<FinancialStatement> list = null;
         if( status.equals("0000") )
         {    
@@ -104,7 +110,7 @@ public class DartApi {
 	private String getCorpCode(String stockNum)
 	{
 		//852087	시디즈	134790
-		return "852087";
+		return "00852087";
 	}
 	
 	private String getReprtCode()

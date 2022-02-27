@@ -60,10 +60,9 @@ public class StockController {
 	
 	@GetMapping("/financial/excel_download")
 	public void getFinancialStateExcelDownload(HttpServletRequest request, HttpServletResponse  response, 
-			@RequestParam String stock_code) {
+			@RequestParam String stock_code, @RequestParam String bsns_year) {
 				
-		String yyyyMMdd = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		Workbook wb = stockService.getFinancialStateExcelDownload(stock_code, yyyyMMdd);
+		Workbook wb = stockService.getFinancialStateExcelDownload(stock_code, bsns_year);
 		
 		if( wb == null ) {
 			response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
@@ -71,7 +70,7 @@ public class StockController {
 		}
 
 		response.setContentType("ms-vnd/excel");
-        response.setHeader("Content-Disposition", "attachment;filename=stok_list_"+stock_code+"_"+yyyyMMdd+".xlsx");
+        response.setHeader("Content-Disposition", "attachment;filename=stok_list_"+stock_code+"_"+bsns_year+".xlsx");
         
         // Excel File Output
         try {
